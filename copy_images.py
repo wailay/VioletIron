@@ -11,6 +11,7 @@ gfx_root_dir = os.path.join('./extracted_res/resources/', root.attrib['gfxroot']
 gfx_dir = os.path.join(gfx_root_dir, 'collectibles')
 data_root_dir = './data'
 
+
 for child in root:
     if child.tag == "null":
         continue
@@ -24,16 +25,13 @@ for child in root:
     if item_name == '<3':
         item_name = 'heart'
 
-    if item_name == '???\'s Only Friend':
-        item_name = 'Question Mark Only Friend'
-
-    for symb in ['?', '!']:
+    for symb in ['?']:
         if symb in item_name:
-            item_name = item_name.replace(symb, '')
+            item_name = item_name.replace(symb, 'qm')
 
     target_dir = os.path.join(data_root_dir, item_name)
     if not os.path.exists(target_dir):
         print(src_dir, target_dir)
         os.makedirs(target_dir)
         copy(src_dir, target_dir)
-            
+
