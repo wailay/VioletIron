@@ -1,5 +1,6 @@
 data/
 extracted_res/
+isaac-env/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

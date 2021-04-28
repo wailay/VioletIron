@@ -25,9 +25,9 @@ for child in root:
     if item_name == '<3':
         item_name = 'heart'
 
-    for symb in ['?']:
-        if symb in item_name:
-            item_name = item_name.replace(symb, 'qm')
+    for symb in [{'symbol': '?', 'replace': 'qm'}, {'symbol': '/', 'replace': 'slash'}]:
+        if symb['symbol'] in item_name:
+            item_name = item_name.replace(symb['symbol'], symb['replace'])
 
     target_dir = os.path.join(data_root_dir, item_name)
     if not os.path.exists(target_dir):
