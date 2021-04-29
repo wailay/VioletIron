@@ -1,7 +1,8 @@
 from torch.utils.data import Dataset
 from PIL import Image
 import os
-
+import torch
+from torchvision import transforms
 class ItemDataSet(Dataset):
     def __init__(self, data_dir, transform=None):
         self.img_labels = [label for label in os.listdir(data_dir)]
@@ -11,7 +12,7 @@ class ItemDataSet(Dataset):
         self.path_to_label = self.generate_dataset()
 
     def __len__(self):
-        return len(self.img_labels)
+        return len(self.path_to_label)
 
     def __getitem__(self, idx):
         img_path, label_name = self.path_to_label[idx]
@@ -41,6 +42,10 @@ class ItemDataSet(Dataset):
 
 if __name__ == '__main__':
     print('dataset test')
+
+    
+
+    
     
     
 
