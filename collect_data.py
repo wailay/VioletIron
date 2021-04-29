@@ -53,7 +53,7 @@ def focus_isaac():
 
 
 def move_isaac():
-    key_down_delay('d', 0.3)
+    key_down_delay('d', 0.5)
 
 def clear_console():
     key_down_delay('backspace', 0.1)
@@ -86,7 +86,7 @@ def take_item_rock_screenshot(path, dim):
     x, y, w, h = dim
     offsetx,offsety = random.randrange(0, 60, 5), random.randrange(0, 60, 5)
     offset_dimx, offset_dimy = random.randrange(0, 60, 5), random.randrange(0, 60, 5)
-    pyautogui.screenshot(path, region=(x+w/2 - 108 - offsetx,y+h/2 - 125 - offsety, 180 + offset_dimx + offsetx/2, 230 + offset_dimy + offsety/2))
+    pyautogui.screenshot(path, region=(x+w/2 - 108 - offsetx,y+h/2 - 125 - offsety, 210 + offset_dimx + offsetx/2, 230 + offset_dimy + offsety/2))
 
 
 if __name__ == '__main__':
@@ -107,7 +107,7 @@ if __name__ == '__main__':
                 '7': ['', 'a', 'b', 'c'],
                 '8': ['', 'a', 'b', 'c'],
                 '10': ['', 'a'], 
-                '11': ['', 'a'], 
+                '11': [''], 
                 '12' : ['']}
 
     # print(stages)
@@ -119,10 +119,10 @@ if __name__ == '__main__':
 
 
     for item_name, label_id in item_to_idx.items():
-        win = win32gui.FindWindow(None, 'Binding of Isaac: Repentance')
-        if win is 0:
-            print('isaac crashed')
-            exit(0)
+        # win = win32gui.FindWindow(None, 'Binding of Isaac: Repentance')
+        # if win == 0:
+        #     print('isaac crashed')
+        #     exit(0)
         curr_id = 0
         
         item_path = os.path.join(root_data_dir, item_name)
@@ -140,7 +140,6 @@ if __name__ == '__main__':
                 move_isaac()
                 
                
-                print('currently processing ', item_path, stage, variant, label_id)
                 for i in range(5):
                     ss_path = os.path.join(item_path, f'{str(curr_id)}_{i}.png')
                     take_item_screenshot(ss_path, win_dim)
@@ -148,5 +147,5 @@ if __name__ == '__main__':
                     take_item_rock_screenshot(ss_path_rock, win_dim)
                 curr_id+=1
 
-
+    print('finished')
     
