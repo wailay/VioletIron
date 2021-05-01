@@ -9,12 +9,13 @@ import os
 from shutil import copy
 import pyperclip
 import random
+import mss
+import mss.tools
 
 def generate_label_to_idx():
     gfx_tree = ET.parse('extracted_res/resources/items.xml')
 
     root = gfx_tree.getroot()
-    data_root_dir = './data'
     item_label_to_idx = {}
     trinket_label_to_idx = {}
 
@@ -77,20 +78,32 @@ def execute_command(command):
 def change_stage(stage):
     execute_command(f'stage {stage}')
 
-def take_item_screenshot(path, dim):
+def take_item_screenshot(sct, path, dim):
     x, y, w, h = dim
-    pyautogui.screenshot(path, region=(x+w/2-45,y+h/2-105, 105, 80))
+    pyautogui.screenshot(path, region=(x+w/2-45,y+h/2-105, 105, 100))
 
-def take_item_rock_screenshot(path, dim):
+def take_item_rock_center_screenshot(sct, path, dim):
+    x, y, w, h = dim
+    pyautogui.screenshot(path, region=(x+w/2-55,y+h/2-105, 100, 170))
+
+def take_item_rock_screenshot(sct, path, dim):
     random.seed()
     x, y, w, h = dim
     offsetx,offsety = random.randrange(0, 60, 5), random.randrange(0, 60, 5)
     offset_dimx, offset_dimy = random.randrange(0, 60, 5), random.randrange(0, 60, 5)
-    pyautogui.screenshot(path, region=(x+w/2 - 108 - offsetx,y+h/2 - 125 - offsety, 210 + offset_dimx + offsetx/2, 230 + offset_dimy + offsety/2))
+    monitor = {"top": int(y+h/2 - 125 - offsety),
+                "left": int(x+w/2 - 108 - offsetx),
+                "width":  int(210 + offset_dimx + offsetx/2),
+                "height": int(230 + offset_dimy + offsety/2)}
+
+    sct_img = sct.grab(monitor)
+
+    mss.tools.to_png(sct_img.rgb, sct_img.size, output=path)
+    # pyautogui.screenshot(path, region=(x+w/2 - 108 - offsetx,y+h/2 - 125 - offsety, 210 + offset_dimx + offsetx/2, 230 + offset_dimy + offsety/2))
 
 
 if __name__ == '__main__':
-    root_data_dir = './data'
+    root_data_dir = './data_center'
     item_to_idx, trinket_to_idx= generate_label_to_idx()
 
 
@@ -139,12 +152,13 @@ if __name__ == '__main__':
                 close_console()
                 move_isaac()
                 
-               
-                for i in range(5):
-                    ss_path = os.path.join(item_path, f'{str(curr_id)}_{i}.png')
-                    take_item_screenshot(ss_path, win_dim)
-                    ss_path_rock = os.path.join(item_path, f'{str(curr_id)}_{i}_rock.png')
-                    take_item_rock_screenshot(ss_path_rock, win_dim)
+                with mss.mss() as sct:
+                    for i in range(4):
+                        # ss_path = os.path.join(item_path, f'{str(curr_id)}_{i}.png')
+                        # take_item_screenshot(sct, ss_path, win_dim)
+                        ss_path_rock = os.path.join(item_path, f'{str(curr_id)}_{i}_rock.png')
+                        # take_item_rock_screenshot(sct, ss_path_rock, win_dim)
+                        take_item_rock_center_screenshot(sct, ss_path_rock, win_dim)
                 curr_id+=1
 
     print('finished')
