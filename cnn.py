@@ -11,19 +11,19 @@ from item_dataset import ItemDataSet
 
 
 class Net(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes):
         super().__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 13 * 13, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 59)
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=6, kernel_size=5)
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.conv2 = nn.Conv2d(in_channels=6, out_channels=16,  kernel_size=5)
+        self.fc1 = nn.Linear(in_features=16 * 5 * 5, out_features=120)
+        self.fc2 = nn.Linear(in_features=120, out_features=84)
+        self.fc3 = nn.Linear(in_features=84, out_features=num_classes)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 13 * 13)
+        x = x.view(-1, 16 * 5 * 5)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
@@ -32,12 +32,12 @@ class Net(nn.Module):
 
 if __name__ == '__main__':
     
-    tensor = torch.rand(3, 2, 3,4)
-
 
     transform = transforms.Compose([
-        transforms.ColorJitter(),
-        transforms.Resize((64,64)),
+        # transforms.RandomRotation(10),
+        # transforms.RandomAutocontrast(),
+        # transforms.ColorJitter(),
+        transforms.Resize((32,32)),
         transforms.ToTensor()])
 
     train_path = './data'
@@ -53,11 +53,11 @@ if __name__ == '__main__':
     print(len(classes))
 
 
-    net = Net()
+    net = Net(len(classes))
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-    for epoch in range(10):  # loop over the dataset multiple times
+    for epoch in range(5):  # loop over the dataset multiple times
 
         running_loss = 0.0
         for i, data in enumerate(trainloader, 0):

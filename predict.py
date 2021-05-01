@@ -7,15 +7,16 @@ from PIL import Image
 import os
 
 NETPATH = './isaac_net.pth'
-net = Net()
+train_path = './data'
+classes = [class_dir for class_dir in os.listdir(train_path)]
+
+net = Net(len(classes))
 net.load_state_dict(torch.load(NETPATH))
 
 transform = transforms.Compose([
-transforms.Resize((64,64)),
+transforms.Resize((32,32)),
 transforms.ToTensor()])
 
-train_path = './data'
-classes = [class_dir for class_dir in os.listdir(train_path)]
 
 for img_path in os.listdir('./test'):
     img = Image.open(os.path.join('./test', img_path)).convert('RGB')
